@@ -3,6 +3,8 @@
 #from models.corrector import Corrector
 import pandas as pd
 import numpy as np
+import warnings
+warnings.filterwarnings("ignore")
 
 
 #detector = Detector()
@@ -12,7 +14,13 @@ import numpy as np
 
 dataset = pd.read_csv('data/dataset_cleand-1-1-1.csv')
 
+print(dataset.shape)
 dataset=dataset[['native', 'text']]
+
+dataset = dataset.dropna()
+dataset = dataset.drop_duplicates()
+
+print(dataset.shape)
 
 for i in dataset.index:
     if '<br/>' in dataset['native'][i]:
@@ -21,3 +29,4 @@ for i in dataset.index:
         dataset['native'][i]=np.array([dataset['native'][i]])
 
 print(dataset.head())
+
