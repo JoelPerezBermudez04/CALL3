@@ -2,13 +2,30 @@ import warnings
 import language_tool_python
 import pandas as pd
 import numpy as np
+import string
 
 warnings.filterwarnings("ignore")
 tool = language_tool_python.LanguageTool('en-GB')
+allowed_chars = set(string.ascii_letters + string.digits + string.punctuation + " \n\t")
 
-def is_english(s, max_ratio = 0.6):
+def is_english(s, max_ratio = 0.6, max_nonlatin = 0.5):
     s = str(s).strip()
     if not s:
+        return False
+
+    total_chars = len(s)
+    if total_chars == 0:
+        return False
+    
+    nonlatin_chars = 0
+
+    for c in s:
+        if c not in allowed_chars:
+            nonlatin_chars += 1
+
+    ratio_nonlatin = nonlatin_chars / total_chars
+
+    if ratio_nonlatin > max_nonlatin:
         return False
 
     matches = tool.check(s)
@@ -31,9 +48,16 @@ def dataset_cleaner(dataset):
     dataset = dataset.dropna()
     dataset = dataset.drop_duplicates()
 
+    initial_length = len(dataset)
+
     print(dataset.shape)        
 
-    for i in dataset.index:
+    for idx, i in enumerate(dataset.index.copy(), 1):
+        
+        if idx % 1000 == 0:
+            print(f"Processed {idx}/{initial_length} rows")
+
+
         if not is_english(dataset['text'][i]):
             #print("Dropped non-english sentence: ", dataset['text'][i])
             dataset = dataset.drop(i)
