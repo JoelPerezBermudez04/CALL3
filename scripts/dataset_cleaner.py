@@ -48,12 +48,14 @@ def dataset_cleaner(dataset):
     dataset = dataset.dropna()
     dataset = dataset.drop_duplicates()
 
+    initial_length = len(dataset)
+
     print(dataset.shape)        
 
-    for i in dataset.index:
-
-        if i % 1000 == 0:
-            print(f"Processed {i}/{len(dataset)} rows")
+    for idx, i in enumerate(dataset.index.copy(), 1):
+        
+        if idx % 1000 == 0:
+            print(f"Processed {idx}/{initial_length} rows")
 
 
         if not is_english(dataset['text'][i]):
