@@ -18,7 +18,7 @@ def dataset_detector(dataset):
         replacements.append([m.replacements for m in matches])
         category.append("; ".join([m.category for m in matches]))
         if i%1000==0:
-            print(i)
+            print(f"Processed {i}/{len(dataset)}")
 
     dataset['error_text']= error_text
     dataset['ruleId'] = ruleId
