@@ -8,7 +8,7 @@ warnings.filterwarnings("ignore")
 tool = language_tool_python.LanguageTool('en-GB')
 allowed_chars = set(string.ascii_letters + string.digits + string.punctuation + " \n\t")
 
-def is_english(s, max_ratio = 0.6, max_nonlatin = 0.5):
+def is_english(s, max_ratio = 0.2, max_nonlatin = 0.2):
     s = str(s).strip()
     if not s:
         return False
@@ -50,9 +50,9 @@ def dataset_cleaner(dataset):
 
     initial_length = len(dataset)
 
-    print(dataset.shape)        
+    print(dataset.shape)
 
-    for idx, i in enumerate(dataset.index.copy(), 1):
+    for idx, i in enumerate(dataset.index.copy(), 0):
         
         if idx % 1000 == 0:
             print(f"Processed {idx}/{initial_length} rows")
@@ -62,10 +62,13 @@ def dataset_cleaner(dataset):
             #print("Dropped non-english sentence: ", dataset['text'][i])
             dataset = dataset.drop(i)
         else:
+            #print("Kept english sentence: ", dataset['text'][i])
             if '<br/>' in dataset['native'][i]:
                 dataset['native'][i]=dataset['native'][i].split('<br/>')
             else:
                 dataset['native'][i]=np.array([dataset['native'][i]])
+        
+        #print("\n")
     
     print(dataset.shape)
     print(dataset.head())
