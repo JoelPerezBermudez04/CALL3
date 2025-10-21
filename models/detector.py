@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import os
 tool = language_tool_python.LanguageTool('en-GB')
-dataset = pd.read_csv('./data/dataset_cleaned.csv')
+dataset = pd.read_csv('./data/Grammer_Checker.csv')
 def dataset_detector(dataset):
     ruleId = []
     replacements = []
@@ -28,7 +28,7 @@ def dataset_detector(dataset):
 
 detected_dataset=dataset_detector(dataset)
 base_dir = os.path.dirname(os.path.dirname(__file__)) 
-save_path = os.path.join(base_dir, "data", "dataset_detected.csv")
+save_path = os.path.join(base_dir, "data", "grmr_detected.csv")
 
 detected_dataset.to_csv(save_path, index=False)
 
