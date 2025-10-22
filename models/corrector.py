@@ -4,15 +4,15 @@ import os
 
 base_dir = os.path.dirname(os.path.dirname(__file__))
 data_dir = os.path.join(base_dir, "data")
-input_path = os.path.join(data_dir, "dataset_detected.csv")
-output_path = os.path.join(data_dir, "dataset_corrected.csv")
+input_path = os.path.join(data_dir, "grmr_detected.csv")
+output_path = os.path.join(data_dir, "grmr_corrected.csv")
 
 try:
     tool = language_tool_python.LanguageTool('en-GB')
 except Exception:
     tool = language_tool_python.LanguageToolPublicAPI('en-GB')
 
-dataset = pd.read_csv('./data/dataset_detected.csv')
+dataset = pd.read_csv('./data/grmr_detected.csv')
 
 def correct_text(text):
     try:
@@ -39,5 +39,5 @@ def dataset_corrector(dataset):
 corrected_dataset = dataset_corrector(dataset)
 
 base_dir = os.path.dirname(os.path.dirname(__file__))
-save_path = os.path.join(base_dir, "data", "dataset_corrected.csv")
+save_path = os.path.join(base_dir, "data", "grmr_corrected.csv")
 corrected_dataset.to_csv(save_path, index=False)
