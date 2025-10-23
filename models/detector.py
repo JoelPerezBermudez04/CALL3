@@ -1,4 +1,4 @@
-import language_tool_python
+#import language_tool_python
 import pandas as pd
 import numpy as np
 import os
@@ -9,10 +9,15 @@ nlp = spacy.load('en_core_web_sm')
 
 annotator = errant.load('en',nlp)
 
-dataset = pd.read_csv('./data/dataset_corrected.csv')
+dataset = pd.read_csv('./data/c4_sample_100k.csv')
 
 def dataset_detector(input,output):
-    
+
+    if not isinstance(input, str):
+        input = "" if pd.isna(input) else str(input)
+    if not isinstance(output, str):
+        output = "" if pd.isna(output) else str(output)
+
     orig = annotator.parse(input)
     cor = annotator.parse(output)
     alignment = annotator.align(orig, cor)
@@ -56,7 +61,9 @@ def dataset_with_errant(dataset):
 
 detected_dataset=dataset_with_errant(dataset)
 base_dir = os.path.dirname(os.path.dirname(__file__)) 
-save_path = os.path.join(base_dir, "data", "dataset_detected_errant.csv")
+save_path = os.path.join(base_dir, "data", "c4_dataset_detected_errant.csv")
+
+detected_dataset.to_csv(save_path, index=False)
 
 # test_dataset = dataset.head(10).copy()
 # detected_dataset = dataset_with_errant(test_dataset)
