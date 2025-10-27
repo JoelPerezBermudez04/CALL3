@@ -8,16 +8,11 @@ import spacy
 nlp = spacy.load('en_core_web_sm')
 
 annotator = errant.load('en',nlp)
-
-dataset = pd.read_csv('./data/c4_sample_100k.csv')
+ 
+dataset = pd.read_csv('./data/dataset_corrected.csv')
 
 def dataset_detector(input,output):
-
-    if not isinstance(input, str):
-        input = "" if pd.isna(input) else str(input)
-    if not isinstance(output, str):
-        output = "" if pd.isna(output) else str(output)
-
+    
     orig = annotator.parse(input)
     cor = annotator.parse(output)
     alignment = annotator.align(orig, cor)
@@ -41,8 +36,8 @@ def dataset_with_errant(dataset):
     all_error_type = []
 
     for i in dataset.index:
-        text = dataset.loc[i, 'text'] 
-        corrected = dataset.loc[i, 'corrected_text'] 
+        text = dataset.loc[i, 'text']
+        corrected = dataset.loc[i, 'corrected_text']
 
         err_text, corr, err_type = dataset_detector(text, corrected)
 
@@ -61,45 +56,5 @@ def dataset_with_errant(dataset):
 
 detected_dataset=dataset_with_errant(dataset)
 base_dir = os.path.dirname(os.path.dirname(__file__)) 
-save_path = os.path.join(base_dir, "data", "c4_dataset_detected_errant.csv")
-
+save_path = os.path.join(base_dir, "data", "dataset_detected_errant.csv")
 detected_dataset.to_csv(save_path, index=False)
-
-# test_dataset = dataset.head(10).copy()
-# detected_dataset = dataset_with_errant(test_dataset)
-# print(detected_dataset[['text', 'corrected_text', 'error_text', 'correction', 'error_type']])
-
-
-
-    # for i in dataset.index:
-    #     text = dataset.loc[i, 'text']
-    #     matches = annotator.parse(text)
-    #     error_text.append(";".join([ text[m.offset : m.offset + m.errorLength] for m in matches]))
-    #     error_type.append("; ".join([m.type for m in matches]))
-    #     replacements.append([m.replacements for m in matches])
-    #     category.append("; ".join([m.category for m in matches]))
-    #     if i%1000==0:
-    #         print(f"Processed {i}/{len(dataset)}")
-
-    # dataset['error_text']= error_text
-    # dataset['error_type'] = error_type
-    # dataset['replacements'] = replacements
-    # dataset['category'] = category
-    # return dataset
-
-# detected_dataset=dataset_detector(dataset)
-# base_dir = os.path.dirname(os.path.dirname(__file__)) 
-# save_path = os.path.join(base_dir, "data", "dataset_detected.csv")
-
-# detected_dataset.to_csv(save_path, index=False)
-
-# ruleId-----0
-# message
-# replacement------2
-# offsetInContext
-# context
-# Offset
-# errorLength
-# category----7
-# ruleIssueType
-# sentence
