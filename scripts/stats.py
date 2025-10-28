@@ -216,4 +216,33 @@ lang_percentages = (lang_counts / lang_counts.sum() * 100).round(2)
 
 #----------------------------------------------------------------------------#
 
-# Error Type Distribution Spanish Bar Chart Split by Error
+# Error Type Distribution Spanish Bar Chart Split by Error (NOT WORKING YET)
+
+# def split_and_strip(x):
+#     if isinstance(x, str):
+#         return [item.strip() for item in x.split(',') if item.strip()]
+#     else:
+#         return []
+
+# dataset['nativesplit'] = dataset['native'].apply(split_and_strip)
+# spanish_df = dataset.explode('nativesplit')
+# spanish_df = spanish_df[spanish_df['nativesplit'] == 'Spanish'].copy()
+# spanish_df['errortypelist'] = spanish_df['error_type'].apply(split_and_strip)
+# spanish_errors = spanish_df.explode('errortypelist').copy()
+# spanish_errors = spanish_errors.dropna(subset=['errortypelist'])
+
+# def base_type(error_code):
+#     if ':' in error_code:
+#         return error_code.split(':', 1)[1]
+#     return error_code
+
+# spanish_errors['BaseType'] = spanish_errors['errortypelist'].map(base_type)
+# error_counts = spanish_errors['BaseType'].value_counts()
+
+# plt.figure(figsize=(12, 6))
+# error_counts.plot(kind='bar')
+# plt.title('Error Types for Spanish Speakers (Grouped by Base Type)')
+# plt.xlabel('Error Type')
+# plt.ylabel('Count')
+# plt.tight_layout()
+# plt.show()
