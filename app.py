@@ -299,28 +299,6 @@ def home():
                     <button type="submit" class="btn-primary">Check Grammar</button>
                 </div>
             </form>
-            
-            <div class="features">
-                <div class="features-title">What We Check</div>
-                <div class="features-grid">
-                    <div class="feature-item">
-                        <div class="feature-icon">📝</div>
-                        <div class="feature-label">Grammar</div>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-icon">✨</div>
-                        <div class="feature-label">Accuracy</div>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-icon">⚡</div>
-                        <div class="feature-label">Instant</div>
-                    </div>
-                    <div class="feature-item">
-                        <div class="feature-icon">🎯</div>
-                        <div class="feature-label">Precise</div>
-                    </div>
-                </div>
-            </div>
         </div>
     </body>
     </html>
@@ -611,9 +589,6 @@ def generate_form(text: str = Form(...)):
                 <a href="/" style="flex: 1; text-decoration: none;">
                     <button class="btn-secondary" style="width: 100%;">← Check Another</button>
                 </a>
-                <button class="btn-primary copy-button" style="flex: 1;" onclick="navigator.clipboard.writeText('{corrected}'); this.textContent='Copied!'; setTimeout(() => this.textContent='Copy Result', 2000);">
-                    Copy Result
-                </button>
             </div>
             
             <div class="footer">
