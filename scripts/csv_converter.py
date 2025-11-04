@@ -1,11 +1,11 @@
 import pandas as pd
 import glob
 
-# TSV to CSV conversion for C4 dataset parts
+# # TSV to CSV conversion for C4 dataset parts
 
-# files = sorted(glob.glob("data/C4_200M.tsv-00000-of-00010"))
+# files = sorted(glob.glob("data/C4_200M.tsv-00002-of-00010"))
 
-# output_file = "data/c4_2.csv"
+# output_file = "data/c4_4.csv"
 
 # first = True
 # for file in files:
@@ -19,12 +19,12 @@ import glob
 
 #----------------------------------------------------------------------------#
 
-# Sampling 100k rows from the CSV file
+# Sampling 1k rows from the CSV file
 
-input_file = "data/c4_2.csv"
-output_file = "data/c4_2_100k.csv"
+input_file = "data/c4_4.csv"
+output_file = "data/c4_4_1k.csv"
 
-sample_df = pd.read_csv(input_file).sample(n=100000, random_state=42)
+sample_df = pd.read_csv(input_file).sample(n=1000, random_state=42)
 
 sample_df.to_csv(output_file, index=False)
 

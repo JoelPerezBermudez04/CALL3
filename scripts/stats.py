@@ -60,43 +60,43 @@ lang_percentages = (lang_counts / lang_counts.sum() * 100).round(2)
 #----------------------------------------------------------------------------#
 
 # Error Type Distribution by Native Language for Top 5 Languages
-top_5_names = lang_counts.head(5).index.tolist()
+# top_5_names = lang_counts.head(5).index.tolist()
 
-df_exploded_langs = dataset.explode('native_split').copy()
-df_exploded_langs.rename(columns={'native_split': 'Native Language'}, inplace=True)
-df_top_5_langs = df_exploded_langs[df_exploded_langs['Native Language'].isin(top_5_names)].copy()
+# df_exploded_langs = dataset.explode('native_split').copy()
+# df_exploded_langs.rename(columns={'native_split': 'Native Language'}, inplace=True)
+# df_top_5_langs = df_exploded_langs[df_exploded_langs['Native Language'].isin(top_5_names)].copy()
 
-df_exploded_errors = df_top_5_langs.explode('error_type_list').copy()
-df_exploded_errors.rename(columns={'error_type_list': 'Error Type'}, inplace=True)
-df_exploded_errors.dropna(subset=['Error Type'], inplace=True)
+# df_exploded_errors = df_top_5_langs.explode('error_type_list').copy()
+# df_exploded_errors.rename(columns={'error_type_list': 'Error Type'}, inplace=True)
+# df_exploded_errors.dropna(subset=['Error Type'], inplace=True)
 
-error_distribution = df_exploded_errors.groupby(['Native Language', 'Error Type']).size().reset_index(name='Count')
+# error_distribution = df_exploded_errors.groupby(['Native Language', 'Error Type']).size().reset_index(name='Count')
 
-pivot_table = error_distribution.pivot(index='Native Language', columns='Error Type', values='Count').fillna(0)
+# pivot_table = error_distribution.pivot(index='Native Language', columns='Error Type', values='Count').fillna(0)
 
-pivot_table['Total'] = pivot_table.sum(axis=1)
-pivot_table = pivot_table.sort_values(by='Total', ascending=False).drop(columns=['Total'])
+# pivot_table['Total'] = pivot_table.sum(axis=1)
+# pivot_table = pivot_table.sort_values(by='Total', ascending=False).drop(columns=['Total'])
 
-plt.figure(figsize=(18, 10))
-ax = pivot_table.plot(
-    kind='bar', 
-    figsize=(18, 10), 
-    width=0.8,
-    colormap='viridis',
-    ax=plt.gca())
+# plt.figure(figsize=(18, 10))
+# ax = pivot_table.plot(
+#     kind='bar', 
+#     figsize=(18, 10), 
+#     width=0.8,
+#     colormap='viridis',
+#     ax=plt.gca())
 
-plt.title(
-    f'Distribution by Native Language({", ".join(top_5_names)})', 
-    fontsize=18, 
-    pad=20)
-plt.xlabel('Native Language', fontsize=14, labelpad=15)
-plt.ylabel('Total Error Count', fontsize=14, labelpad=15)
-plt.xticks(rotation=0, ha='center', fontsize=12)
-plt.yticks(fontsize=12)
-plt.legend(title='Error Type', bbox_to_anchor=(1.02, 1), loc='upper left', fontsize=10, title_fontsize=12)
-plt.grid(axis='y', linestyle='--', alpha=0.6)
-plt.tight_layout(rect=[0, 0, 1, 0.95])
-plt.show()
+# plt.title(
+#     f'Distribution by Native Language({", ".join(top_5_names)})', 
+#     fontsize=18, 
+#     pad=20)
+# plt.xlabel('Native Language', fontsize=14, labelpad=15)
+# plt.ylabel('Total Error Count', fontsize=14, labelpad=15)
+# plt.xticks(rotation=0, ha='center', fontsize=12)
+# plt.yticks(fontsize=12)
+# plt.legend(title='Error Type', bbox_to_anchor=(1.02, 1), loc='upper left', fontsize=10, title_fontsize=12)
+# plt.grid(axis='y', linestyle='--', alpha=0.6)
+# plt.tight_layout(rect=[0, 0, 1, 0.95])
+# plt.show()
 
 #----------------------------------------------------------------------------#
 
@@ -175,44 +175,44 @@ plt.show()
 
 #----------------------------------------------------------------------------#
 
-# # Pie Chart Distribution of Spanish
+# Pie Chart Distribution of Spanish
 
-# spanish_df = dataset.explode('native_split')
-# spanish_df = spanish_df[spanish_df['native_split'] == 'Spanish'].copy()
+spanish_df = dataset.explode('native_split')
+spanish_df = spanish_df[spanish_df['native_split'] == 'Spanish'].copy()
 
-# spanish_errors = spanish_df.explode('error_type_list').copy()
-# spanish_errors.rename(columns={'error_type_list': 'Error Type'}, inplace=True)
-# spanish_errors.dropna(subset=['Error Type'], inplace=True)
+spanish_errors = spanish_df.explode('error_type_list').copy()
+spanish_errors.rename(columns={'error_type_list': 'Error Type'}, inplace=True)
+spanish_errors.dropna(subset=['Error Type'], inplace=True)
 
-# error_counts = spanish_errors['Error Type'].value_counts()
+error_counts = spanish_errors['Error Type'].value_counts()
 
-# top_n = 8
-# if len(error_counts) > top_n:
-#     top_errors = error_counts.head(top_n)
-#     other_sum = error_counts[top_n:].sum()
-#     top_errors['Other'] = other_sum
-# else:
-#     top_errors = error_counts
+top_n = 8
+if len(error_counts) > top_n:
+    top_errors = error_counts.head(top_n)
+    other_sum = error_counts[top_n:].sum()
+    top_errors['Other'] = other_sum
+else:
+    top_errors = error_counts
 
-# plt.figure(figsize=(10, 10))
+plt.figure(figsize=(10, 10))
 
-# wedges, texts, autotexts = plt.pie(
-#     top_errors,
-#     labels=None,
-#     autopct='%1.1f%%',
-#     startangle=140,
-#     pctdistance=0.95
-# )
-# plt.legend(
-#     wedges,
-#     top_errors.index,
-#     title='Error Type',
-#     bbox_to_anchor=(1.05, 1),
-#     loc='upper left'
-# )
-# plt.title('Error Type Distribution for Spanish Speakers')
-# plt.tight_layout()
-# plt.show()
+wedges, texts, autotexts = plt.pie(
+    top_errors,
+    labels=None,
+    autopct='%1.1f%%',
+    startangle=140,
+    pctdistance=0.95
+)
+plt.legend(
+    wedges,
+    top_errors.index,
+    title='Error Type',
+    bbox_to_anchor=(1.05, 1),
+    loc='upper left'
+)
+plt.title('Error Type Distribution for Spanish Speakers')
+plt.tight_layout()
+plt.show()
 
 #----------------------------------------------------------------------------#
 
