@@ -50,6 +50,12 @@ git clone https://github.com/JoelPerezBermudez04/CALL3.git
 ```
 ---
 
+## Launch Webapp
+```bash
+uvicorn app:app --reload
+```
+---
+
 ## Ethical Framework
 
 The system was developed under the principles of the EU Ethics Guidelines for Trustworthy AI, IEEE Ethically Aligned Design, and GDPR.
