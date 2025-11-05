@@ -65,11 +65,13 @@ Key focuses included:
 
 ## Contributors
 Bokyung Kim, Jiya Kartoidjojo, Katelyn Donovan and Joel Pérez
+
 University of Twente – Data Science and Artificial Intelligence Project 2025
 
 ---
 
 ## Project Status
 Completed – Adaptive CALL Web Application (Version 1.0)
+
 Future work includes larger multilingual datasets, usability testing, and integration of transformer-based models for improved accuracy.
 
