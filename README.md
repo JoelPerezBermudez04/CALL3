@@ -45,12 +45,15 @@ This project integrates multiple topics from the *Data Science and Artificial In
 ## Getting Started
 
 Clone the repository:
+
 ```bash
 git clone https://github.com/JoelPerezBermudez04/CALL3.git
 ```
 ---
 
 ## Launch Webapp
+Run this command in terminal: 
+
 ```bash
 uvicorn app:app --reload
 ```
