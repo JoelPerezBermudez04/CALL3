@@ -318,283 +318,484 @@ def generate_form(text: str = Form(...)):
     else:
         corrected = result
     
-    diff_html = create_diff_html(text, corrected)
+    is_correct = text.strip().lower() == corrected.strip().lower()
     
-    return f"""
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Correction Result - GrammarAssist</title>
-        <style>
-            * {{
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-            }}
-            
-            body {{
-                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-                background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-                min-height: 100vh;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                padding: 20px;
-            }}
-            
-            .container {{
-                background: white;
-                border-radius: 16px;
-                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-                max-width: 600px;
-                width: 100%;
-                padding: 60px 40px;
-            }}
-            
-            .header {{
-                text-align: center;
-                margin-bottom: 40px;
-            }}
-            
-            .logo {{
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 10px;
-                margin-bottom: 20px;
-            }}
-            
-            .logo-icon {{
-                width: 40px;
-                height: 40px;
-                background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
-                border-radius: 8px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: white;
-                font-weight: bold;
-                font-size: 24px;
-            }}
-            
-            .logo-text {{
-                font-size: 24px;
-                font-weight: 700;
-                color: #0f172a;
-            }}
-            
-            h1 {{
-                font-size: 28px;
-                color: #0f172a;
-                margin-bottom: 12px;
-                font-weight: 700;
-            }}
-            
-            .status {{
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 8px;
-                color: #10b981;
-                font-weight: 600;
-                font-size: 16px;
-                margin-top: 12px;
-            }}
-            
-            .status-icon {{
-                width: 24px;
-                height: 24px;
-                background: #d1fae5;
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 14px;
-            }}
-            
-            .comparison {{
-                margin-top: 40px;
-                padding: 24px;
-                background: #f8fafc;
-                border-radius: 12px;
-            }}
-            
-            .comparison-row {{
-                margin-bottom: 24px;
-            }}
-            
-            .comparison-row:last-child {{
-                margin-bottom: 0;
-            }}
-            
-            .comparison-label {{
-                font-size: 12px;
-                font-weight: 700;
-                color: #94a3b8;
-                text-transform: uppercase;
-                margin-bottom: 8px;
-                letter-spacing: 1px;
-            }}
-            
-            .comparison-text {{
-                padding: 12px;
-                border-radius: 8px;
-                font-size: 16px;
-                line-height: 1.6;
-                color: #0f172a;
-            }}
-            
-            .original {{
-                background: #fee2e2;
-                border-left: 4px solid #ef4444;
-            }}
-            
-            .corrected {{
-                background: #d1fae5;
-                border-left: 4px solid #10b981;
-            }}
-            
-            /* Added styles for diff highlighting */
-            .diff-changed {{
-                background: #fef3c7;
-                color: #92400e;
-                text-decoration: underline;
-                text-decoration-color: #fbbf24;
-                text-decoration-thickness: 2px;
-                text-underline-offset: 2px;
-                font-weight: 600;
-                padding: 2px 4px;
-                border-radius: 3px;
-            }}
-            
-            .diff-added {{
-                background: #bbf7d0;
-                color: #065f46;
-                font-weight: 600;
-                padding: 2px 4px;
-                border-radius: 3px;
-            }}
-            
-            .actions {{
-                display: flex;
-                gap: 12px;
-                margin-top: 40px;
-            }}
-            
-            button {{
-                flex: 1;
-                padding: 14px 24px;
-                border: none;
-                border-radius: 8px;
-                font-size: 16px;
-                font-weight: 600;
-                cursor: pointer;
-                transition: all 0.3s ease;
-            }}
-            
-            .btn-primary {{
-                background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
-                color: white;
-            }}
-            
-            .btn-primary:hover {{
-                transform: translateY(-2px);
-                box-shadow: 0 10px 25px rgba(14, 165, 233, 0.3);
-            }}
-            
-            .btn-secondary {{
-                background: white;
-                color: #0ea5e9;
-                border: 2px solid #0ea5e9;
-            }}
-            
-            .btn-secondary:hover {{
-                background: #f0f9ff;
-            }}
-            
-            .footer {{
-                text-align: center;
-                margin-top: 32px;
-                padding-top: 24px;
-                border-top: 1px solid #e2e8f0;
-            }}
-            
-            .footer-text {{
-                font-size: 14px;
-                color: #64748b;
-            }}
-            
-            .copy-button {{
-                display: inline-block;
-                margin-top: 8px;
-                padding: 6px 12px;
-                background: #e0f2fe;
-                color: #0369a1;
-                border: none;
-                border-radius: 6px;
-                font-size: 12px;
-                font-weight: 600;
-                cursor: pointer;
-                transition: all 0.2s ease;
-            }}
-            
-            .copy-button:hover {{
-                background: #bae6fd;
-            }}
-            
-            @media (max-width: 600px) {{
-                .container {{
-                    padding: 40px 24px;
+    if is_correct:
+        return f"""
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Perfect! - GrammarAssist</title>
+            <style>
+                * {{
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
                 }}
                 
-                h1 {{
+                body {{
+                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+                    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+                    min-height: 100vh;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 20px;
+                }}
+                
+                .container {{
+                    background: white;
+                    border-radius: 16px;
+                    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+                    max-width: 600px;
+                    width: 100%;
+                    padding: 60px 40px;
+                }}
+                
+                .header {{
+                    text-align: center;
+                    margin-bottom: 40px;
+                }}
+                
+                .logo {{
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 10px;
+                    margin-bottom: 20px;
+                }}
+                
+                .logo-icon {{
+                    width: 40px;
+                    height: 40px;
+                    background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+                    border-radius: 8px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: white;
+                    font-weight: bold;
                     font-size: 24px;
                 }}
                 
-                .actions {{
-                    flex-direction: column;
+                .logo-text {{
+                    font-size: 24px;
+                    font-weight: 700;
+                    color: #0f172a;
                 }}
-            }}
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <div class="header">
-                <div class="logo">
-                    <div class="logo-icon">✓</div>
-                    <div class="logo-text">GrammarAssist</div>
-                </div>
-                <h1>Check Complete</h1>
-                <div class="status">
-                    <div class="status-icon">✓</div>
-                    <span>Correction Complete</span>
-                </div>
-            </div>
-            
-            <div class="comparison">
-                <div class="comparison-row">
-                    <div class="comparison-label">Original Text</div>
-                    <div class="comparison-text original">{text}</div>
+                
+                .celebration {{
+                    font-size: 80px;
+                    margin-bottom: 20px;
+                    animation: bounce 1s infinite;
+                }}
+                
+                @keyframes bounce {{
+                    0%, 100% {{ transform: translateY(0); }}
+                    50% {{ transform: translateY(-10px); }}
+                }}
+                
+                h1 {{
+                    font-size: 32px;
+                    color: #10b981;
+                    margin-bottom: 12px;
+                    font-weight: 700;
+                }}
+                
+                .message {{
+                    font-size: 18px;
+                    color: #0f172a;
+                    line-height: 1.6;
+                    margin-bottom: 32px;
+                }}
+                
+                .perfect-text {{
+                    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+                    border: 2px solid #10b981;
+                    border-radius: 12px;
+                    padding: 20px;
+                    margin-bottom: 32px;
+                    font-size: 16px;
+                    line-height: 1.6;
+                    color: #065f46;
+                    font-weight: 500;
+                }}
+                
+                .motivational {{
+                    background: #fef3c7;
+                    border-left: 4px solid #f59e0b;
+                    padding: 16px;
+                    border-radius: 8px;
+                    margin-bottom: 32px;
+                    color: #92400e;
+                    font-weight: 500;
+                }}
+                
+                .actions {{
+                    display: flex;
+                    gap: 12px;
+                }}
+                
+                button {{
+                    flex: 1;
+                    padding: 14px 24px;
+                    border: none;
+                    border-radius: 8px;
+                    font-size: 16px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                }}
+                
+                .btn-primary {{
+                    background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+                    color: white;
+                }}
+                
+                .btn-primary:hover {{
+                    transform: translateY(-2px);
+                    box-shadow: 0 10px 25px rgba(14, 165, 233, 0.3);
+                }}
+                
+                .btn-secondary {{
+                    background: white;
+                    color: #10b981;
+                    border: 2px solid #10b981;
+                }}
+                
+                .btn-secondary:hover {{
+                    background: #d1fae5;
+                }}
+                
+                @media (max-width: 600px) {{
+                    .container {{
+                        padding: 40px 24px;
+                    }}
+                    
+                    h1 {{
+                        font-size: 24px;
+                    }}
+                    
+                    .celebration {{
+                        font-size: 60px;
+                    }}
+                    
+                    .actions {{
+                        flex-direction: column;
+                    }}
+                }}
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <div class="celebration">🎉</div>
+                    <div class="logo">
+                        <div class="logo-icon">✓</div>
+                        <div class="logo-text">GrammarAssist</div>
+                    </div>
+                    <h1>Perfect Grammar!</h1>
                 </div>
                 
-                <div class="comparison-row">
-                    <div class="comparison-label">Corrected Text (Changes Highlighted)</div>
-                    <div class="comparison-text corrected">{diff_html}</div>
+                <p class="message">Excellent work! Your sentence is grammatically correct.</p>
+                
+                <div class="perfect-text">
+                    {text}
+                </div>
+                
+                <div class="motivational">
+                    ⭐ Keep up the great work! Your English is improving!
+                </div>
+                
+                <div class="actions">
+                    <a href="/" style="flex: 1; text-decoration: none;">
+                        <button class="btn-secondary" style="width: 100%;">← Check Another</button>
+                    </a>
                 </div>
             </div>
-            
-            <div class="actions">
-                <a href="/" style="flex: 1; text-decoration: none;">
-                    <button class="btn-secondary" style="width: 100%;">← Check Another</button>
-                </a>
+        </body>
+        </html>
+        """
+    else:    
+        diff_html = create_diff_html(text, corrected)
+        
+        return f"""
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Correction Result - GrammarAssist</title>
+            <style>
+                * {{
+                    margin: 0;
+                    padding: 0;
+                    box-sizing: border-box;
+                }}
+                
+                body {{
+                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+                    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+                    min-height: 100vh;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 20px;
+                }}
+                
+                .container {{
+                    background: white;
+                    border-radius: 16px;
+                    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+                    max-width: 600px;
+                    width: 100%;
+                    padding: 60px 40px;
+                }}
+                
+                .header {{
+                    text-align: center;
+                    margin-bottom: 40px;
+                }}
+                
+                .logo {{
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 10px;
+                    margin-bottom: 20px;
+                }}
+                
+                .logo-icon {{
+                    width: 40px;
+                    height: 40px;
+                    background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+                    border-radius: 8px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: white;
+                    font-weight: bold;
+                    font-size: 24px;
+                }}
+                
+                .logo-text {{
+                    font-size: 24px;
+                    font-weight: 700;
+                    color: #0f172a;
+                }}
+                
+                h1 {{
+                    font-size: 28px;
+                    color: #0f172a;
+                    margin-bottom: 12px;
+                    font-weight: 700;
+                }}
+                
+                .status {{
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 8px;
+                    color: #10b981;
+                    font-weight: 600;
+                    font-size: 16px;
+                    margin-top: 12px;
+                }}
+                
+                .status-icon {{
+                    width: 24px;
+                    height: 24px;
+                    background: #d1fae5;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 14px;
+                }}
+                
+                .comparison {{
+                    margin-top: 40px;
+                    padding: 24px;
+                    background: #f8fafc;
+                    border-radius: 12px;
+                }}
+                
+                .comparison-row {{
+                    margin-bottom: 24px;
+                }}
+                
+                .comparison-row:last-child {{
+                    margin-bottom: 0;
+                }}
+                
+                .comparison-label {{
+                    font-size: 12px;
+                    font-weight: 700;
+                    color: #94a3b8;
+                    text-transform: uppercase;
+                    margin-bottom: 8px;
+                    letter-spacing: 1px;
+                }}
+                
+                .comparison-text {{
+                    padding: 12px;
+                    border-radius: 8px;
+                    font-size: 16px;
+                    line-height: 1.6;
+                    color: #0f172a;
+                }}
+                
+                .original {{
+                    background: #fee2e2;
+                    border-left: 4px solid #ef4444;
+                }}
+                
+                .corrected {{
+                    background: #d1fae5;
+                    border-left: 4px solid #10b981;
+                }}
+                
+                /* Added styles for diff highlighting */
+                .diff-changed {{
+                    background: #fef3c7;
+                    color: #92400e;
+                    text-decoration: underline;
+                    text-decoration-color: #fbbf24;
+                    text-decoration-thickness: 2px;
+                    text-underline-offset: 2px;
+                    font-weight: 600;
+                    padding: 2px 4px;
+                    border-radius: 3px;
+                }}
+                
+                .diff-added {{
+                    background: #bbf7d0;
+                    color: #065f46;
+                    font-weight: 600;
+                    padding: 2px 4px;
+                    border-radius: 3px;
+                }}
+                
+                .actions {{
+                    display: flex;
+                    gap: 12px;
+                    margin-top: 40px;
+                }}
+                
+                button {{
+                    flex: 1;
+                    padding: 14px 24px;
+                    border: none;
+                    border-radius: 8px;
+                    font-size: 16px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                }}
+                
+                .btn-primary {{
+                    background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+                    color: white;
+                }}
+                
+                .btn-primary:hover {{
+                    transform: translateY(-2px);
+                    box-shadow: 0 10px 25px rgba(14, 165, 233, 0.3);
+                }}
+                
+                .btn-secondary {{
+                    background: white;
+                    color: #0ea5e9;
+                    border: 2px solid #0ea5e9;
+                }}
+                
+                .btn-secondary:hover {{
+                    background: #f0f9ff;
+                }}
+                
+                .footer {{
+                    text-align: center;
+                    margin-top: 32px;
+                    padding-top: 24px;
+                    border-top: 1px solid #e2e8f0;
+                }}
+                
+                .footer-text {{
+                    font-size: 14px;
+                    color: #64748b;
+                }}
+                
+                .copy-button {{
+                    display: inline-block;
+                    margin-top: 8px;
+                    padding: 6px 12px;
+                    background: #e0f2fe;
+                    color: #0369a1;
+                    border: none;
+                    border-radius: 6px;
+                    font-size: 12px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                }}
+                
+                .copy-button:hover {{
+                    background: #bae6fd;
+                }}
+                
+                @media (max-width: 600px) {{
+                    .container {{
+                        padding: 40px 24px;
+                    }}
+                    
+                    h1 {{
+                        font-size: 24px;
+                    }}
+                    
+                    .actions {{
+                        flex-direction: column;
+                    }}
+                }}
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <div class="logo">
+                        <div class="logo-icon">✓</div>
+                        <div class="logo-text">GrammarAssist</div>
+                    </div>
+                    <h1>Check Complete</h1>
+                    <div class="status">
+                        <div class="status-icon">✓</div>
+                        <span>Correction Complete</span>
+                    </div>
+                </div>
+                
+                <div class="comparison">
+                    <div class="comparison-row">
+                        <div class="comparison-label">Original Text</div>
+                        <div class="comparison-text original">{text}</div>
+                    </div>
+                    
+                    <div class="comparison-row">
+                        <div class="comparison-label">Corrected Text (Changes Highlighted)</div>
+                        <div class="comparison-text corrected">{diff_html}</div>
+                    </div>
+                </div>
+                
+                <div class="actions">
+                    <a href="/" style="flex: 1; text-decoration: none;">
+                        <button class="btn-secondary" style="width: 100%;">← Check Another</button>
+                    </a>
+                </div>
+                
+                <div class="footer">
+                    <p class="footer-text">Keep practicing! Each correction helps you improve your English.</p>
+                </div>
             </div>
-            
-            <div class="footer">
-                <p class="footer-text">Keep practicing! Each correction helps you improve your English.</p>
-            </div>
-        </div>
-    </body>
-    </html>
-    """
+        </body>
+        </html>
+        """
