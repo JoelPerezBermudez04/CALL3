@@ -2,8 +2,8 @@
 
 ## Adaptive Computer-Assisted Language Learning (CALL) for English Learners
 
-Welcome to our CALL project — an AI-powered language learning tool designed to help non-native English speakers improve their grammar through intelligent feedback.  
-Built using Natural Language Processing (NLP) and Machine Learning, this web app analyses learner text, identifies grammatical errors, and provides personalised corrections — with a special focus on supporting native Spanish speakers.
+Welcome to our CALL project, an AI-powered language learning tool designed to help non-native English speakers improve their grammar through intelligent feedback.  
+Built using Natural Language Processing (NLP) and Machine Learning, this web app analyses learner text, identifies grammatical errors, and provides personalised corrections, with a special focus on supporting native Spanish speakers.
 
 ---
 
@@ -45,9 +45,17 @@ This project integrates multiple topics from the *Data Science and Artificial In
 ## Getting Started
 
 Clone the repository:
+
 ```bash
 git clone https://github.com/JoelPerezBermudez04/CALL3.git
-cd adaptive-call-project
+```
+---
+
+## Launch Webapp
+Run this command in terminal: 
+
+```bash
+uvicorn app:app --reload
 ```
 ---
 

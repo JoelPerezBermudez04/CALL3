@@ -20,10 +20,8 @@ app = FastAPI()
 base_model_name = "unsloth/gemma-2-2b-it-bnb-4bit"
 lora_path = "grammar_checker_lora"
 
-# Tokenizer
 tokenizer = AutoTokenizer.from_pretrained(base_model_name)
 
-# Modelo base 4-bit en CPU
 base_model = AutoModelForCausalLM.from_pretrained(
     base_model_name,
     device_map={"": "cpu"},
@@ -32,7 +30,6 @@ base_model = AutoModelForCausalLM.from_pretrained(
     torch_dtype=torch.float16
 )
 
-# Aplicar LoRA en CPU
 model = PeftModel.from_pretrained(base_model, lora_path, device_map={"": "cpu"})
 
 def create_diff_html(original: str, corrected: str) -> str:
@@ -47,13 +44,10 @@ def create_diff_html(original: str, corrected: str) -> str:
         if tag == 'equal':
             result_html.append(' '.join(corrected_words[j1:j2]))
         elif tag == 'replace':
-            # Word was changed
             result_html.append(f'<span class="diff-changed">{" ".join(corrected_words[j1:j2])}</span>')
         elif tag == 'insert':
-            # Word was added
             result_html.append(f'<span class="diff-added">{" ".join(corrected_words[j1:j2])}</span>')
         elif tag == 'delete':
-            # Word was removed (don't show in corrected text)
             pass
         result_html.append(' ')
     
@@ -312,7 +306,6 @@ def generate_form(text: str = Form(...)):
         outputs = model.generate(**inputs, max_new_tokens=100)
     result = tokenizer.decode(outputs[0], skip_special_tokens=True)
     
-    # Extract only the corrected sentence from the result
     if "### Response:" in result:
         corrected = result.split("### Response:")[-1].strip()
     else:
@@ -799,3 +792,4 @@ def generate_form(text: str = Form(...)):
         </body>
         </html>
         """
+
